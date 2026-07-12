@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edu.online</groupId>
-    <artifactId>online-edu-v1</artifactId>
+    <artifactId>online-edu</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>online-edu-v1</name>
     <description>online-edu-v1</description>
@@ -90,7 +90,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.edu.online.OnlineEduV1Application</mainClass>
+                    <mainClass>com.edu.online.OnlineEduApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

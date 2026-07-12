@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.edu.online.mapper")
-public class OnlineEduV1Application {
+public class OnlineEduApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OnlineEduV1Application.class, args);
+        SpringApplication.run(OnlineEduApplication.class, args);
     }
 
 }
