@@ -58,6 +58,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
+        <!-- Redis缓存 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- Hutool工具类：雪花算法、日期工具 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.27</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

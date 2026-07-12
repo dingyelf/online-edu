@@ -51,38 +51,41 @@
     </div>
 </div>
 
-<!-- 新增/编辑课程模态框 -->
+<!-- 课程新增/编辑弹窗 -->
 <div class="modal fade" id="courseModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">新增课程</h5>
+                <h5 class="modal-title">课程信息</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="courseForm">
-                    <input type="hidden" id="courseId">
-                    <div class="mb-3">
-                        <label class="form-label">课程标题</label>
-                        <input type="text" class="form-control" id="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">课程封面地址</label>
-                        <input type="text" class="form-control" id="cover" placeholder="请输入图片URL">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">课程视频地址</label>
-                        <input type="text" class="form-control" id="videoUrl" placeholder="请输入MP4视频URL" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">课程简介</label>
-                        <textarea class="form-control" id="description" rows="3"></textarea>
-                    </div>
-                </form>
+                <input type="hidden" id="courseId">
+                <div class="mb-3">
+                    <label>课程标题</label>
+                    <input type="text" class="form-control" id="title" placeholder="请输入标题">
+                </div>
+                <div class="mb-3">
+                    <label>课程封面地址</label>
+                    <input type="text" class="form-control" id="cover" placeholder="http 或者 /image/xxx.jpg">
+                </div>
+                <div class="mb-3">
+                    <label>课程视频地址</label>
+                    <input type="text" class="form-control" id="videoUrl" placeholder="http 或者 /video/xxx.mp4">
+                </div>
+                <!-- ===== V2新增价格输入框 ===== -->
+                <div class="mb-3">
+                    <label>课程价格（0=免费）</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="price" placeholder="0.00" value="0">
+                </div>
+                <div class="mb-3">
+                    <label>课程简介</label>
+                    <textarea class="form-control" id="description" rows="3"></textarea>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button class="btn btn-primary" id="saveBtn">保存</button>
             </div>
         </div>
     </div>
@@ -153,6 +156,7 @@
             $('#cover').val(course.cover || '');
             $('#videoUrl').val(course.videoUrl);
             $('#description').val(course.description || '');
+            $('#price').val(course.price || '');
             new bootstrap.Modal('#courseModal').show();
         });
     }
@@ -163,6 +167,7 @@
             title: $('#title').val(),
             cover: $('#cover').val(),
             videoUrl: $('#videoUrl').val(),
+            price: $('#price').val(),
             description: $('#description').val()
         };
 

@@ -5,22 +5,20 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("edu_course")
-public class EduCourse {
+@TableName("edu_user_course")
+public class EduUserCourse {
+
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String title;
-    private String cover;
-    private String description;
-    private String videoUrl;
 
-    private BigDecimal price;
+    private Long userId;
+
+    private Long courseId;
+
+    private Long orderId;
 
     private LocalDateTime createTime;
-    private LocalDateTime updateTime;
-    private Integer deleted;
 }
