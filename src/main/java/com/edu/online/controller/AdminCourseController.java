@@ -4,8 +4,6 @@ import com.edu.online.common.Result;
 import com.edu.online.entity.EduCourse;
 import com.edu.online.service.EduCourseService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 

@@ -28,7 +28,8 @@
 <div class="container mt-4 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>课程管理</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseModal" id="addBtn">新增课程</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseModal" id="addBtn">新增课程
+        </button>
     </div>
 
     <!-- 课程表格 -->
@@ -44,7 +45,9 @@
                 </tr>
                 </thead>
                 <tbody id="courseTable">
-                <tr><td colspan="4" class="text-center">加载中...</td></tr>
+                <tr>
+                    <td colspan="4" class="text-center">加载中...</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -76,7 +79,8 @@
                 <!-- ===== V2新增价格输入框 ===== -->
                 <div class="mb-3">
                     <label>课程价格（0=免费）</label>
-                    <input type="number" step="0.01" min="0" class="form-control" id="price" placeholder="0.00" value="0">
+                    <input type="number" step="0.01" min="0" class="form-control" id="price" placeholder="0.00"
+                           value="0">
                 </div>
                 <div class="mb-3">
                     <label>课程简介</label>

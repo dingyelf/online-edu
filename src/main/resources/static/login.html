@@ -1,138 +1,143 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>登录 - 在线教育平台</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 在线教育平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card shadow">
-        <div class="card-body p-4">
-          <h3 class="text-center mb-4" id="formTitle">用户登录</h3>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4" id="formTitle">用户登录</h3>
 
-          <!-- 登录表单 -->
-          <form id="loginForm">
-            <div class="mb-3">
-              <label class="form-label">用户名</label>
-              <input type="text" class="form-control" id="loginUsername" placeholder="请输入用户名" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">密码</label>
-              <input type="password" class="form-control" id="loginPassword" placeholder="请输入密码" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">登录</button>
-            <div class="text-center mt-3">
-              还没有账号？<a href="javascript:;" id="toRegister">立即注册</a>
-            </div>
-          </form>
+                    <!-- 登录表单 -->
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="loginUsername" placeholder="请输入用户名"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">密码</label>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="请输入密码"
+                                   required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">登录</button>
+                        <div class="text-center mt-3">
+                            还没有账号？<a href="javascript:;" id="toRegister">立即注册</a>
+                        </div>
+                    </form>
 
-          <!-- 注册表单 -->
-          <form id="registerForm" style="display: none;">
-            <div class="mb-3">
-              <label class="form-label">用户名</label>
-              <input type="text" class="form-control" id="regUsername" placeholder="请输入用户名" required>
+                    <!-- 注册表单 -->
+                    <form id="registerForm" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="regUsername" placeholder="请输入用户名"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">密码</label>
+                            <input type="password" class="form-control" id="regPassword"
+                                   placeholder="请输入密码（至少6位）" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">确认密码</label>
+                            <input type="password" class="form-control" id="regConfirmPassword"
+                                   placeholder="请再次输入密码" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">注册</button>
+                        <div class="text-center mt-3">
+                            已有账号？<a href="javascript:;" id="toLogin">立即登录</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">密码</label>
-              <input type="password" class="form-control" id="regPassword" placeholder="请输入密码（至少6位）" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">确认密码</label>
-              <input type="password" class="form-control" id="regConfirmPassword" placeholder="请再次输入密码" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">注册</button>
-            <div class="text-center mt-3">
-              已有账号？<a href="javascript:;" id="toLogin">立即登录</a>
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script>
-  // 表单切换
-  $('#toRegister').click(function () {
-    $('#loginForm').hide();
-    $('#registerForm').show();
-    $('#formTitle').text('用户注册');
-  });
-
-  $('#toLogin').click(function () {
-    $('#registerForm').hide();
-    $('#loginForm').show();
-    $('#formTitle').text('用户登录');
-  });
-
-  // 登录提交
-  $('#loginForm').submit(function (e) {
-    e.preventDefault();
-    const data = {
-      username: $('#loginUsername').val(),
-      password: $('#loginPassword').val()
-    };
-
-    $.ajax({
-      url: '/api/user/login',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(data),
-      success: function (res) {
-        if (res.code === 200) {
-          alert('登录成功');
-          window.location.href = '/index.html';
-        } else {
-          alert(res.msg);
-        }
-      },
-      error: function (xhr) {
-        alert(xhr.responseJSON.msg || '登录失败');
-      }
+    // 表单切换
+    $('#toRegister').click(function () {
+        $('#loginForm').hide();
+        $('#registerForm').show();
+        $('#formTitle').text('用户注册');
     });
-  });
 
-  // 注册提交
-  $('#registerForm').submit(function (e) {
-    e.preventDefault();
-    const pwd = $('#regPassword').val();
-    const confirmPwd = $('#regConfirmPassword').val();
-
-    if (pwd !== confirmPwd) {
-      alert('两次输入的密码不一致');
-      return;
-    }
-
-    const data = {
-      username: $('#regUsername').val(),
-      password: pwd
-    };
-
-    $.ajax({
-      url: '/api/user/register',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(data),
-      success: function (res) {
-        if (res.code === 200) {
-          alert('注册成功，请登录');
-          $('#toLogin').click();
-          $('#loginUsername').val(data.username);
-        } else {
-          alert(res.msg);
-        }
-      },
-      error: function (xhr) {
-        alert(xhr.responseJSON.msg || '注册失败');
-      }
+    $('#toLogin').click(function () {
+        $('#registerForm').hide();
+        $('#loginForm').show();
+        $('#formTitle').text('用户登录');
     });
-  });
+
+    // 登录提交
+    $('#loginForm').submit(function (e) {
+        e.preventDefault();
+        const data = {
+            username: $('#loginUsername').val(),
+            password: $('#loginPassword').val()
+        };
+
+        $.ajax({
+            url: '/api/user/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.code === 200) {
+                    alert('登录成功');
+                    window.location.href = '/index.html';
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.responseJSON.msg || '登录失败');
+            }
+        });
+    });
+
+    // 注册提交
+    $('#registerForm').submit(function (e) {
+        e.preventDefault();
+        const pwd = $('#regPassword').val();
+        const confirmPwd = $('#regConfirmPassword').val();
+
+        if (pwd !== confirmPwd) {
+            alert('两次输入的密码不一致');
+            return;
+        }
+
+        const data = {
+            username: $('#regUsername').val(),
+            password: pwd
+        };
+
+        $.ajax({
+            url: '/api/user/register',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.code === 200) {
+                    alert('注册成功，请登录');
+                    $('#toLogin').click();
+                    $('#loginUsername').val(data.username);
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.responseJSON.msg || '注册失败');
+            }
+        });
+    });
 </script>
 </body>
 </html>

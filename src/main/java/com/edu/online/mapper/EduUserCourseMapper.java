@@ -1,7 +1,6 @@
 package com.edu.online.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 import com.edu.online.entity.EduUserCourse;
 import org.apache.ibatis.annotations.Mapper;
 

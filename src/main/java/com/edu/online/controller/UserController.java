@@ -3,7 +3,6 @@ package com.edu.online.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.edu.online.common.Result;
 import com.edu.online.entity.SysUser;
-
 import com.edu.online.service.SysUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +24,7 @@ public class UserController {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, sysUser.getUsername());
         long count = userService.count(queryWrapper);
         if (count > 0) {
-            return Result.fail(400,"用户名已存在");
+            return Result.fail(400, "用户名已存在");
         }
         sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         sysUser.setRole(0);

@@ -44,7 +44,9 @@
                 </tr>
                 </thead>
                 <tbody id="orderTable">
-                <tr><td colspan="5" class="text-center">加载中...</td></tr>
+                <tr>
+                    <td colspan="5" class="text-center">加载中...</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -55,10 +57,14 @@
     // 状态文字转换
     function getStatusText(status) {
         switch (status) {
-            case 0: return '<span class="text-warning">待支付</span>';
-            case 1: return '<span class="text-success">已支付</span>';
-            case 2: return '<span class="text-secondary">已取消</span>';
-            default: return '未知';
+            case 0:
+                return '<span class="text-warning">待支付</span>';
+            case 1:
+                return '<span class="text-success">已支付</span>';
+            case 2:
+                return '<span class="text-secondary">已取消</span>';
+            default:
+                return '未知';
         }
     }
 
@@ -93,7 +99,7 @@
                 const id = $(this).data('id');
                 if (!confirm('确认取消？')) return;
                 ajaxRequest(`/api/order/cancel?id=${id}`, 'POST').done(r => {
-                    if(r.code===200){
+                    if (r.code === 200) {
                         alert('已取消');
                         loadOrderList();
                     }
