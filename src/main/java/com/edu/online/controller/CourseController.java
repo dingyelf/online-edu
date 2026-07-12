@@ -29,7 +29,7 @@ public class CourseController {
     // 公开课程列表
     @GetMapping("/list")
     public Result<List<EduCourse>> getCourseList() {
-        List<EduCourse> list = courseService.list();
+        List<EduCourse> list = courseService.listWithCache();
         return Result.success(list);
     }
 

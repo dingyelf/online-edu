@@ -26,14 +26,16 @@ public class AdminCourseController {
     // 新增课程
     @PostMapping("/add")
     public Result<String> addCourse(@RequestBody EduCourse course) {
-        courseService.save(course);
+        courseService.saveOrUpdate(course);
+        courseService.refreshCourseCache();
         return Result.success("新增成功");
     }
 
     // 编辑课程
     @PostMapping("/update")
     public Result<String> updateCourse(@RequestBody EduCourse course) {
-        courseService.updateById(course);
+        courseService.saveOrUpdate(course);
+        courseService.refreshCourseCache();
         return Result.success("修改成功");
     }
 
@@ -41,6 +43,7 @@ public class AdminCourseController {
     @DeleteMapping("/delete")
     public Result<String> deleteCourse(@RequestParam("id") Long id) {
         courseService.removeById(id);
+        courseService.refreshCourseCache();
         return Result.success("删除成功");
     }
 
