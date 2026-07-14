@@ -31,11 +31,14 @@
 </div>
 
 <script>
+    let pageNum = 1;
+    const pageSize = 8;
     // 加载课程列表
     function loadCourses() {
-        ajaxRequest('/api/course/list', 'GET').done(function (res) {
+        ajaxRequest(`/api/course/list?current=${pageNum}&size=${pageSize}`, 'GET').done(function (res) {
             if (res.code !== 200) return;
-            const courseList = res.data;
+            const page = res.data;
+            const courseList = page.records;
             let html = '';
 
             if (courseList.length === 0) {

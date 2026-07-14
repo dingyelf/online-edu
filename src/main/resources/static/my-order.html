@@ -69,9 +69,12 @@
     }
 
     function loadOrderList() {
-        ajaxRequest('/api/order/myList', 'GET').done(res => {
+        let current = 1;
+        const pageSize = 8;
+
+        ajaxRequest(`/api/order/myList?current=${current}&size=${pageSize}`, 'GET').done(res => {
             if (res.code !== 200) return;
-            const list = res.data;
+            const list = res.data.records;
             let html = '';
             if (list.length === 0) {
                 html = '<tr><td colspan="5" class="text-center text-muted">暂无订单</td></tr>';

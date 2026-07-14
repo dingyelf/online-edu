@@ -37,11 +37,14 @@
 </div>
 
 <script>
+    let current = 1;
+    const pageSize = 8;
     function loadMyCourse() {
         // 思路：先查全部订单（已支付）→拿到courseId，再查询课程信息
-        ajaxRequest('/api/order/myList', 'GET').done(res => {
+        ajaxRequest(`/api/order/myList?current=${current}&size=${pageSize}`, 'GET').done(res => {
             if (res.code !== 200) return;
-            const allOrders = res.data.filter(o => o.status === 1);
+            debugger
+            const allOrders = res.data.records.filter(o => o.status === 1);
             if (allOrders.length === 0) {
                 $('#courseList').html('<div class="col-12 text-muted text-center">暂无已购课程</div>');
                 return;

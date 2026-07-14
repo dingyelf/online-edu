@@ -1,6 +1,8 @@
 package com.edu.online.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.edu.online.common.PageResult;
 import com.edu.online.common.Result;
 import com.edu.online.entity.EduCourse;
 import com.edu.online.entity.EduOrder;
@@ -70,13 +72,20 @@ public class OrderController {
      * 获取我的订单列表
      */
     @GetMapping("/myList")
-    public Result<List<EduOrder>> myOrderList(HttpSession session) {
+    public Result<PageResult<EduOrder>> myOrderList(
+            @RequestParam(name = "current", defaultValue = "1") Long current,
+            @RequestParam(name = "size", defaultValue = "8") Long size,
+            HttpSession session) {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
+
         LambdaQueryWrapper<EduOrder> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(EduOrder::getUserId, loginUser.getId());
         wrapper.orderByDesc(EduOrder::getCreateTime);
-        List<EduOrder> list = orderService.list(wrapper);
-        return Result.success(list);
+
+        IPage<EduOrder> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(current, size);
+        page = orderService.page(page);
+
+        return Result.success(PageResult.build(page));
     }
 
     /**

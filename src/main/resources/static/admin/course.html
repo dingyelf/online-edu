@@ -98,11 +98,14 @@
 <script>
     let isEdit = false;
 
+    let current = 1;
+    const pageSize = 8;
+
     // 加载课程列表
     function loadCourseList() {
-        ajaxRequest('/api/admin/course/list', 'GET').done(function (res) {
+        ajaxRequest(`/api/admin/course/list?current=${current}&size=${pageSize}`, 'GET').done(function (res) {
             if (res.code !== 200) return;
-            const list = res.data;
+            const list = res.data.records;
             let html = '';
 
             if (list.length === 0) {

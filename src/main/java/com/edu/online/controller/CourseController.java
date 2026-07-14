@@ -1,5 +1,6 @@
 package com.edu.online.controller;
 
+import com.edu.online.common.PageResult;
 import com.edu.online.common.Result;
 import com.edu.online.entity.EduCourse;
 import com.edu.online.entity.SysUser;
@@ -30,9 +31,12 @@ public class CourseController {
 
     // 公开课程列表
     @GetMapping("/list")
-    public Result<List<EduCourse>> getCourseList() {
+    public Result<PageResult<EduCourse>> getCourseList(
+            @RequestParam(value = "current", defaultValue = "1") Long current,
+            @RequestParam(value = "size", defaultValue = "8") Long size) {
         List<EduCourse> list = courseService.listWithCache();
-        return Result.success(list);
+        PageResult<EduCourse> pageResult = PageResult.buildFromList(list, current, size);
+        return Result.success(pageResult);
     }
 
     // 公开课程详情

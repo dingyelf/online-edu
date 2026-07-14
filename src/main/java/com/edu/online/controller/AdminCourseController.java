@@ -1,5 +1,7 @@
 package com.edu.online.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.edu.online.common.PageResult;
 import com.edu.online.common.Result;
 import com.edu.online.entity.EduCourse;
 import com.edu.online.service.EduCourseService;
@@ -19,8 +21,12 @@ public class AdminCourseController {
 
     // 课程列表
     @GetMapping("/list")
-    public Result<List<EduCourse>> getList() {
-        return Result.success(courseService.list());
+    public Result<PageResult<EduCourse>> coursePage(
+            @RequestParam(name = "current", defaultValue = "1") Long current,
+            @RequestParam(name = "size", defaultValue = "8") Long size) {
+        IPage<EduCourse> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(current, size);
+        page = courseService.page(page);
+        return Result.success(PageResult.build(page));
     }
 
     // 新增课程
