@@ -50,7 +50,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         }
         // 缓存不存在查询数据库
         EduCourse course = this.getById(courseId);
-        if(course != null){
+        if (course != null) {
             ops.set(key, course, EXPIRE_SECONDS, TimeUnit.SECONDS);
         }
         return course;
@@ -62,7 +62,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         // 删除列表缓存
         redisTemplate.delete(COURSE_LIST_KEY);
         var keys = redisTemplate.keys(COURSE_INFO_PREFIX + "*");
-        if(keys != null && !keys.isEmpty()){
+        if (keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys);
         }
     }

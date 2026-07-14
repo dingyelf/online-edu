@@ -29,7 +29,7 @@ public class OrderTimeoutTask {
                 .lt(EduOrder::getCreateTime, expireTime);
 
         int count = orderMapper.update(null, updateWrapper);
-        if(count > 0){
+        if (count > 0) {
             System.out.println("【订单定时任务】自动关闭超时订单数量：" + count);
         }
     }
