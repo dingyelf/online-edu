@@ -88,11 +88,11 @@ public class OrderController {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
         EduOrder order = orderService.getById(orderId);
         if (order == null) {
-            return Result.fail(404, "订单不存在");
+            throw new BusinessException(404, "订单不存在");
         }
         // 只能查看自己的订单
         if (!order.getUserId().equals(loginUser.getId())) {
-            return Result.fail(403, "无权查看该订单");
+            throw new BusinessException(403, "无权查看该订单");
         }
         return Result.success(order);
     }
@@ -106,14 +106,14 @@ public class OrderController {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
         EduOrder order = orderService.getById(orderId);
         if (order == null) {
-            return Result.fail(404, "订单不存在");
+            throw new BusinessException(404, "订单不存在");
         }
         if (!order.getUserId().equals(loginUser.getId())) {
-            return Result.fail(403, "无权操作");
+            throw new BusinessException(403, "无权操作");
         }
         // 只有待支付可以取消
         if (order.getStatus() != 0) {
-            return Result.fail(400, "仅待支付订单可取消");
+            throw new BusinessException(400, "仅待支付订单可取消");
         }
         order.setStatus(2);
         orderService.updateById(order);
@@ -128,13 +128,13 @@ public class OrderController {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
         EduOrder order = orderService.getById(orderId);
         if (order == null) {
-            return Result.fail(404, "订单不存在");
+            throw new BusinessException(404, "订单不存在");
         }
         if (!order.getUserId().equals(loginUser.getId())) {
-            return Result.fail(403, "无权操作");
+            throw new BusinessException(403, "无权操作");
         }
         if (order.getStatus() != 0) {
-            return Result.fail(400, "订单状态异常");
+            throw new BusinessException(400, "订单状态异常");
         }
 
         // ========== 事务建议：后续包装 @Transactional ==========
