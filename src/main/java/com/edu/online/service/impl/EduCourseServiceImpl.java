@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse> implements EduCourseService {
 
     private static final String COURSE_LIST_KEY = "online:edu:course:list";
+    // 课程详情key前缀
+    private static final String COURSE_INFO_PREFIX = "online:edu:course:info:";
     private static final long EXPIRE_SECONDS = 10 * 60; // 10分钟
 
     @Resource
@@ -39,7 +41,29 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     }
 
     @Override
+    public EduCourse getByIdWithCache(Long courseId) {
+        String key = COURSE_INFO_PREFIX + courseId;
+        ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+        Object cache = ops.get(key);
+        if (cache != null) {
+            return (EduCourse) cache;
+        }
+        // 缓存不存在查询数据库
+        EduCourse course = this.getById(courseId);
+        if(course != null){
+            ops.set(key, course, EXPIRE_SECONDS, TimeUnit.SECONDS);
+        }
+        return course;
+    }
+
+
+    @Override
     public void refreshCourseCache() {
+        // 删除列表缓存
         redisTemplate.delete(COURSE_LIST_KEY);
+        var keys = redisTemplate.keys(COURSE_INFO_PREFIX + "*");
+        if(keys != null && !keys.isEmpty()){
+            redisTemplate.delete(keys);
+        }
     }
 }

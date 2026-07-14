@@ -26,6 +26,7 @@ public class CourseController {
         this.userCourseService = userCourseService;
     }
 
+
     // 公开课程列表
     @GetMapping("/list")
     public Result<List<EduCourse>> getCourseList() {
@@ -36,7 +37,8 @@ public class CourseController {
     // 公开课程详情
     @GetMapping("/detail")
     public Result<EduCourse> getCourseDetail(@RequestParam("id") Long id, HttpSession session) {
-        EduCourse course = courseService.getById(id);
+        // 使用带缓存方法获取原始课程
+        EduCourse course = courseService.getByIdWithCache(id);
         if (course == null) {
             return Result.fail(404, "课程不存在");
         }
@@ -54,11 +56,24 @@ public class CourseController {
             hasBuy = userCourseService.userHasBuyCourse(loginUser.getId(), id);
         }
 
+        // 复制对象，不要修改缓存内原始数据！！
+        EduCourse respCourse = new EduCourse();
+        respCourse.setId(course.getId());
+        respCourse.setTitle(course.getTitle());
+        respCourse.setCover(course.getCover());
+        respCourse.setDescription(course.getDescription());
+        respCourse.setPrice(course.getPrice());
+        respCourse.setCreateTime(course.getCreateTime());
+        respCourse.setUpdateTime(course.getUpdateTime());
+        respCourse.setDeleted(course.getDeleted());
+
         // 未购买：清空视频地址，前端不能播放
-        if (!hasBuy) {
-            course.setVideoUrl("");
+        if (hasBuy) {
+            respCourse.setVideoUrl(course.getVideoUrl());
+        } else {
+            respCourse.setVideoUrl("");
         }
-        return Result.success(course);
+        return Result.success(respCourse);
     }
 
 }
