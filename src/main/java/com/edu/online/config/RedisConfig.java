@@ -1,6 +1,7 @@
 package com.edu.online.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -48,6 +49,12 @@ public class RedisConfig {
         objectMapper.registerModule(javaTimeModule);
         // 避免序列化报错
         objectMapper.registerModule(new SimpleModule());
+
+        // ========== 核心根治配置：自动写入类型信息，防止反序列化为LinkedHashMap ==========
+        objectMapper.activateDefaultTyping(
+                LaissezFaireSubTypeValidator.instance,
+                ObjectMapper.DefaultTyping.NON_FINAL
+        );
 
         GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
         StringRedisSerializer strSerializer = new StringRedisSerializer();
