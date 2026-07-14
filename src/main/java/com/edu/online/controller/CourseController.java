@@ -3,6 +3,7 @@ package com.edu.online.controller;
 import com.edu.online.common.Result;
 import com.edu.online.entity.EduCourse;
 import com.edu.online.entity.SysUser;
+import com.edu.online.exception.BusinessException;
 import com.edu.online.service.EduCourseService;
 import com.edu.online.service.EduUserCourseService;
 import jakarta.servlet.http.HttpSession;
@@ -40,7 +41,7 @@ public class CourseController {
         // 使用带缓存方法获取原始课程
         EduCourse course = courseService.getByIdWithCache(id);
         if (course == null) {
-            return Result.fail(404, "课程不存在");
+            throw new BusinessException(404, "课程不存在");
         }
 
         // 免费课程直接完整返回

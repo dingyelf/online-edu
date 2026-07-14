@@ -6,6 +6,7 @@ import com.edu.online.entity.EduCourse;
 import com.edu.online.entity.EduOrder;
 import com.edu.online.entity.EduUserCourse;
 import com.edu.online.entity.SysUser;
+import com.edu.online.exception.BusinessException;
 import com.edu.online.service.EduCourseService;
 import com.edu.online.service.EduOrderService;
 import com.edu.online.service.EduUserCourseService;
@@ -47,11 +48,11 @@ public class OrderController {
 
         EduCourse course = courseService.getById(courseId);
         if (course == null) {
-            return Result.fail(400, "课程不存在");
+            throw new BusinessException(400, "课程不存在");
         }
 
         if (BigDecimal.ZERO.compareTo(course.getPrice()) >= 0) {
-            return Result.fail(400, "免费课程无需购买");
+            throw new BusinessException(400, "免费课程无需购买");
         }
 
         EduOrder order = new EduOrder();
