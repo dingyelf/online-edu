@@ -12,7 +12,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/admin/course.html">后台管理</a>
+        <a class="navbar-brand" href="/admin/index.html">后台管理</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
@@ -23,73 +23,107 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item" id="userNav"></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:logout()">退出登录</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <h3 class="mb-3">全部订单数据</h3>
-    <div class="card shadow">
+    <h4 class="mb-3">全部订单</h4>
+    <div class="card">
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>订单ID</th>
                     <th>订单号</th>
                     <th>用户ID</th>
-                    <th>课程ID</th>
+                    <th>课程名称</th>
                     <th>金额</th>
                     <th>状态</th>
                     <th>创建时间</th>
                 </tr>
                 </thead>
-                <tbody id="tableBody">
+                <tbody id="orderTable">
                 <tr>
-                    <td colspan="7" class="text-center">加载中</td>
+                    <td colspan="6" class="text-center">加载中...</td>
                 </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center mt-3" id="pageBar"></div>
         </div>
     </div>
 </div>
 
 <script>
-    function statusText(s) {
-        if (s === 0) return '<span class="text-warning">待支付</span>';
-        if (s === 1) return '<span class="text-success">已支付</span>';
-        return '<span class="text-secondary">已取消</span>';
+    let orderCurrent = 1;
+    const pageSize = 10;
+
+    function getStatusText(status){
+        switch(status){
+            case 0:return '<span class="text-warning">待支付</span>';
+            case 1:return '<span class="text-success">已支付</span>';
+            case 2:return '<span class="text-secondary">已取消</span>';
+            default:return "未知";
+        }
     }
 
-    function loadOrder() {
-        ajaxRequest('/api/admin/order/list', 'GET').done(res => {
-            if (res.code !== 200) return;
-            const list = res.data;
-            let html = '';
-            if (list.length === 0) {
-                html = '<tr><td colspan="7" class="text-center">暂无订单</td></tr>';
-            } else {
-                list.forEach(item => {
+    function loadOrderList(){
+        ajaxRequest(`/api/admin/order/list?current=${orderCurrent}&size=${pageSize}`,"GET").done(res=>{
+            if(res.code!==200) return;
+            const page = res.data;
+            const list = page.records;
+            let html = "";
+            if(list.length===0){
+                html = "<tr><td colspan='6' class='text-center'>暂无订单数据</td></tr>";
+            }else{
+                list.forEach(item=>{
                     html += `
                     <tr>
-                        <td>${item.id}</td>
                         <td>${item.orderNo}</td>
                         <td>${item.userId}</td>
-                        <td>${item.courseId}</td>
+                        <td>${item.courseTitle}</td>
                         <td>${item.amount}</td>
-                        <td>${statusText(item.status)}</td>
+                        <td>${getStatusText(item.status)}</td>
                         <td>${item.createTime}</td>
-                    </tr>`;
+                    </tr>
+                    `;
                 })
             }
-            $('#tableBody').html(html);
+            $("#orderTable").html(html);
+            renderPage(page);
         })
     }
 
-    $(function () {
-        renderNav();
-        loadOrder();
+    function renderPage(page) {
+        let total = page.total;
+        let current = page.current;
+        let size = page.size;
+        let totalPage = Math.ceil(total/size);
+        let pageHtml = `<ul class="pagination">`;
+        if(current>1){
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current-1})">上一页</a></li>`;
+        }else{
+            pageHtml += `<li class="page-item disabled"><span class="page-link">上一页</span></li>`;
+        }
+        pageHtml += `<li class="page-item disabled"><span class="page-link">第${current}页 / 共${totalPage}页</span></li>`;
+        if(current < totalPage){
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current+1})">下一页</a></li>`;
+        }else{
+            pageHtml += `<li class="page-item disabled"><span class="page-link">下一页</span></li>`;
+        }
+        pageHtml += `</ul>`;
+        $("#pageBar").html(pageHtml);
+    }
+    function changeAdminOrderPage(num){
+        orderCurrent = num;
+        loadOrderList();
+    }
+
+    $(function(){
+        loadOrderList();
     })
 </script>
 </body>

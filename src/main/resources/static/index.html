@@ -28,11 +28,15 @@
     <div class="row g-4" id="courseList">
         <div class="col-12 text-center">加载中...</div>
     </div>
+
+    <!-- 分页容器 -->
+    <div class="mt-4 d-flex justify-content-center" id="pageBar"></div>
 </div>
 
 <script>
     let pageNum = 1;
     const pageSize = 8;
+
     // 加载课程列表
     function loadCourses() {
         ajaxRequest(`/api/course/list?current=${pageNum}&size=${pageSize}`, 'GET').done(function (res) {
@@ -62,7 +66,45 @@
                 });
             }
             $('#courseList').html(html);
+
+            // ========== 渲染分页栏 ==========
+            renderPage(page);
         });
+    }
+
+    // 渲染分页
+    function renderPage(page) {
+        let total = page.total;
+        let current = page.current;
+        let size = page.size;
+        let totalPage = Math.ceil(total / size);
+        let pageHtml = `<ul class="pagination">`;
+
+        // 上一页
+        if (current > 1) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changePage(${current - 1})">上一页</a></li>`;
+        } else {
+            pageHtml += `<li class="page-item disabled"><span class="page-link">上一页</span></li>`;
+        }
+
+        // 页码信息
+        pageHtml += `<li class="page-item disabled"><span class="page-link">第${current}页 / 共${totalPage}页</span></li>`;
+
+        // 下一页
+        if (current < totalPage) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changePage(${current + 1})">下一页</a></li>`;
+        } else {
+            pageHtml += `<li class="page-item disabled"><span class="page-link">下一页</span></li>`;
+        }
+
+        pageHtml += `</ul>`;
+        $("#pageBar").html(pageHtml);
+    }
+
+    // 切换页码
+    function changePage(num) {
+        pageNum = num;
+        loadCourses();
     }
 
     // 页面初始化

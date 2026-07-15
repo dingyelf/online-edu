@@ -3,88 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>课程管理 - 后台中心</title>
+    <title>课程管理</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/common.js"></script>
 </head>
 <body>
-<!-- 顶部导航 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/admin/course.html">后台管理中心</a>
+        <a class="navbar-brand" href="/admin/index.html">后台管理</a>
         <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin/course.html">课程管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/order.html">订单管理</a>
+                </li>
+            </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/index.html" target="_blank">前台首页</a>
+                    <a class="nav-link" href="javascript:logout()">退出登录</a>
                 </li>
-                <li class="nav-item" id="userNav"></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4 mb-5">
+<div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>课程管理</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseModal" id="addBtn">新增课程
-        </button>
+        <h4>课程列表</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseModal">新增课程</button>
     </div>
-
-    <!-- 课程表格 -->
-    <div class="card shadow">
+    <div class="card">
         <div class="card-body">
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <th width="60">ID</th>
-                    <th>课程标题</th>
-                    <th width="300">封面</th>
-                    <th width="200">操作</th>
+                    <th>ID</th>
+                    <th>课程名称</th>
+                    <th>价格</th>
+                    <th>封面</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody id="courseTable">
                 <tr>
-                    <td colspan="4" class="text-center">加载中...</td>
+                    <td colspan="5" class="text-center">加载中...</td>
                 </tr>
                 </tbody>
             </table>
+            <!--分页栏-->
+            <div class="d-flex justify-content-center mt-3" id="pageBar"></div>
         </div>
     </div>
 </div>
 
-<!-- 课程新增/编辑弹窗 -->
+<!-- 新增/编辑弹窗 -->
 <div class="modal fade" id="courseModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">课程信息</h5>
+                <h5 class="modal-title">课程编辑</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="courseId">
                 <div class="mb-3">
-                    <label>课程标题</label>
-                    <input type="text" class="form-control" id="title" placeholder="请输入标题">
-                </div>
-                <div class="mb-3">
-                    <label>课程封面地址</label>
-                    <input type="text" class="form-control" id="cover" placeholder="http 或者 /image/xxx.jpg">
-                </div>
-                <div class="mb-3">
-                    <label>课程视频地址</label>
-                    <input type="text" class="form-control" id="videoUrl" placeholder="http 或者 /video/xxx.mp4">
-                </div>
-                <!-- ===== V2新增价格输入框 ===== -->
-                <div class="mb-3">
-                    <label>课程价格（0=免费）</label>
-                    <input type="number" step="0.01" min="0" class="form-control" id="price" placeholder="0.00"
-                           value="0">
+                    <label>课程名称</label>
+                    <input class="form-control" id="title">
                 </div>
                 <div class="mb-3">
                     <label>课程简介</label>
-                    <textarea class="form-control" id="description" rows="3"></textarea>
+                    <textarea class="form-control" id="description"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label>课程价格</label>
+                    <input type="number" step="0.01" class="form-control" id="price">
+                </div>
+                <div class="mb-3">
+                    <label>封面地址</label>
+                    <input class="form-control" id="cover">
+                </div>
+                <div class="mb-3">
+                    <label>视频地址</label>
+                    <input class="form-control" id="videoUrl">
                 </div>
             </div>
             <div class="modal-footer">
@@ -96,123 +100,114 @@
 </div>
 
 <script>
-    let isEdit = false;
-
-    let current = 1;
+    let courseCurrent = 1;
     const pageSize = 8;
 
-    // 加载课程列表
     function loadCourseList() {
-        ajaxRequest(`/api/admin/course/list?current=${current}&size=${pageSize}`, 'GET').done(function (res) {
-            if (res.code !== 200) return;
-            const list = res.data.records;
-            let html = '';
-
-            if (list.length === 0) {
-                html = '<tr><td colspan="4" class="text-center text-muted">暂无课程</td></tr>';
-            } else {
-                list.forEach(course => {
-                    const cover = course.cover ? `<img src="${course.cover}" style="height: 60px;">` : '无封面';
+        ajaxRequest(`/api/admin/course/list?current=${courseCurrent}&size=${pageSize}`,"GET").done(res=>{
+            if(res.code!==200) return;
+            const page = res.data;
+            const list = page.records;
+            let html = "";
+            if(list.length===0){
+                html = "<tr><td colspan='5' class='text-center'>暂无数据</td></tr>";
+            }else{
+                list.forEach(item=>{
                     html += `
                     <tr>
-                        <td>${course.id}</td>
-                        <td>${course.title}</td>
-                        <td>${cover}</td>
+                        <td>${item.id}</td>
+                        <td>${item.title}</td>
+                        <td>${item.price}</td>
                         <td>
-                            <button class="btn btn-sm btn-info edit-btn" data-id="${course.id}">编辑</button>
-                            <button class="btn btn-sm btn-danger delete-btn" data-id="${course.id}">删除</button>
+                            ${item.cover?`<img src="${item.cover}" style="height:60px">`:'无'}
                         </td>
-                    </tr>`;
-                });
+                        <td>
+                            <button class="btn btn-sm btn-info edit-btn" data-id="${item.id}">编辑</button>
+                            <button class="btn btn-sm btn-danger del-btn" data-id="${item.id}">删除</button>
+                        </td>
+                    </tr>
+                    `;
+                })
             }
-            $('#courseTable').html(html);
-
-            // 绑定编辑事件
-            $('.edit-btn').click(function () {
-                const id = $(this).data('id');
-                editCourse(id);
-            });
-
-            // 绑定删除事件
-            $('.delete-btn').click(function () {
-                const id = $(this).data('id');
-                if (confirm('确定要删除该课程吗？')) {
-                    deleteCourse(id);
-                }
-            });
-        });
+            $("#courseTable").html(html);
+            renderPage(page);
+        })
     }
 
-    // 新增按钮重置表单
-    $('#addBtn').click(function () {
-        isEdit = false;
-        $('#modalTitle').text('新增课程');
-        $('#courseForm')[0].reset();
-        $('#courseId').val('');
-    });
-
-    // 编辑课程
-    function editCourse(id) {
-        isEdit = true;
-        $('#modalTitle').text('编辑课程');
-        ajaxRequest('/api/admin/course/getById?id=' + id, 'GET').done(function (res) {
-            if (res.code !== 200) return;
-            const course = res.data;
-            $('#courseId').val(course.id);
-            $('#title').val(course.title);
-            $('#cover').val(course.cover || '');
-            $('#videoUrl').val(course.videoUrl);
-            $('#description').val(course.description || '');
-            $('#price').val(course.price || '');
-            new bootstrap.Modal('#courseModal').show();
-        });
-    }
-
-    // 保存课程
-    $('#saveBtn').click(function () {
-        const data = {
-            title: $('#title').val(),
-            cover: $('#cover').val(),
-            videoUrl: $('#videoUrl').val(),
-            price: $('#price').val(),
-            description: $('#description').val()
-        };
-
-        if (!data.title || !data.videoUrl) {
-            alert('课程标题和视频地址不能为空');
-            return;
+    // 分页渲染
+    function renderPage(page) {
+        let total = page.total;
+        let current = page.current;
+        let size = page.size;
+        let totalPage = Math.ceil(total/size);
+        let pageHtml = `<ul class="pagination">`;
+        if(current>1){
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeCoursePage(${current-1})">上一页</a></li>`;
+        }else{
+            pageHtml += `<li class="page-item disabled"><span class="page-link">上一页</span></li>`;
         }
-
-        let url = '/api/admin/course/add';
-        if (isEdit) {
-            url = '/api/admin/course/update';
-            data.id = $('#courseId').val();
+        pageHtml += `<li class="page-item disabled"><span class="page-link">第${current}页 / 共${totalPage}页</span></li>`;
+        if(current < totalPage){
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeCoursePage(${current+1})">下一页</a></li>`;
+        }else{
+            pageHtml += `<li class="page-item disabled"><span class="page-link">下一页</span></li>`;
         }
-
-        ajaxRequest(url, 'POST', data).done(function (res) {
-            if (res.code === 200) {
-                alert('保存成功');
-                bootstrap.Modal.getInstance('#courseModal').hide();
-                loadCourseList();
-            }
-        });
-    });
-
-    // 删除课程
-    function deleteCourse(id) {
-        ajaxRequest('/api/admin/course/delete?id=' + id, 'DELETE').done(function (res) {
-            if (res.code === 200) {
-                alert('删除成功');
-                loadCourseList();
-            }
-        });
+        pageHtml += `</ul>`;
+        $("#pageBar").html(pageHtml);
     }
-
-    // 页面初始化
-    $(function () {
-        renderNav();
+    function changeCoursePage(num){
+        courseCurrent = num;
         loadCourseList();
-    });
+    }
+
+    // 保存
+    $("#saveBtn").click(function(){
+        let id = $("#courseId").val();
+        let data = {
+            id:id?title:null,
+            title:$("#title").val(),
+            description:$("#description").val(),
+            price:$("#price").val(),
+            cover:$("#cover").val(),
+            videoUrl:$("#videoUrl").val()
+        };
+        ajaxRequest("/api/admin/course/save","POST",data).done(res=>{
+            alert(res.msg);
+            if(res.code===200){
+                $("#courseModal").modal('hide');
+                loadCourseList();
+            }
+        })
+    })
+
+    //编辑
+    $(document).on("click",".edit-btn",function(){
+        let id = $(this).data("id");
+        ajaxRequest(`/api/course/detail?id=${id}`,"GET").done(res=>{
+            let d = res.data;
+            $("#courseId").val(d.id);
+            $("#title").val(d.title);
+            $("#description").val(d.description);
+            $("#price").val(d.price);
+            $("#cover").val(d.cover);
+            $("#videoUrl").val(d.videoUrl);
+            $("#courseModal").modal("show");
+        })
+    })
+
+    //删除
+    $(document).on("click",".del-btn",function(){
+        let id = $(this).data("id");
+        if(!confirm("确定删除？")) return;
+        ajaxRequest(`/api/admin/course/delete?id=${id}`,"POST").done(res=>{
+            alert(res.msg);
+            loadCourseList();
+        })
+    })
+
+    $(function(){
+        loadCourseList();
+    })
 </script>
 </body>
 </html>

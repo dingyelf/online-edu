@@ -49,11 +49,17 @@
                 </tr>
                 </tbody>
             </table>
+            <!-- 分页容器 -->
+            <div class="d-flex justify-content-center mt-3" id="pageBar"></div>
         </div>
     </div>
 </div>
 
 <script>
+    // 分页全局变量
+    let orderCurrent = 1;
+    const pageSize = 8;
+
     // 状态文字转换
     function getStatusText(status) {
         switch (status) {
@@ -69,12 +75,10 @@
     }
 
     function loadOrderList() {
-        let current = 1;
-        const pageSize = 8;
-
-        ajaxRequest(`/api/order/myList?current=${current}&size=${pageSize}`, 'GET').done(res => {
+        ajaxRequest(`/api/order/myList?current=${orderCurrent}&size=${pageSize}`, 'GET').done(res => {
             if (res.code !== 200) return;
-            const list = res.data.records;
+            const page = res.data;
+            const list = page.records;
             let html = '';
             if (list.length === 0) {
                 html = '<tr><td colspan="5" class="text-center text-muted">暂无订单</td></tr>';
@@ -97,6 +101,9 @@
             }
             $('#orderTable').html(html);
 
+            // 渲染分页
+            renderPage(page);
+
             // 取消订单事件
             $('.cancel-btn').click(function () {
                 const id = $(this).data('id');
@@ -109,6 +116,39 @@
                 });
             });
         });
+    }
+
+    // 渲染分页组件
+    function renderPage(page) {
+        let total = page.total;
+        let current = page.current;
+        let size = page.size;
+        let totalPage = Math.ceil(total / size);
+        let pageHtml = `<ul class="pagination">`;
+
+        // 上一页
+        if (current > 1) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeOrderPage(${current - 1})">上一页</a></li>`;
+        } else {
+            pageHtml += `<li class="page-item disabled"><span class="page-link">上一页</span></li>`;
+        }
+
+        pageHtml += `<li class="page-item disabled"><span class="page-link">第${current}页 / 共${totalPage}页</span></li>`;
+
+        // 下一页
+        if (current < totalPage) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeOrderPage(${current + 1})">下一页</a></li>`;
+        } else {
+            pageHtml += `<li class="page-item disabled"><span class="page-link">下一页</span></li>`;
+        }
+        pageHtml += `</ul>`;
+        $("#pageBar").html(pageHtml);
+    }
+
+    // 切换页码
+    function changeOrderPage(num) {
+        orderCurrent = num;
+        loadOrderList();
     }
 
     $(function () {
