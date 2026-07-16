@@ -5,6 +5,12 @@ server:
       timeout: 30m
 
 spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     username: root
     password: Root@123456

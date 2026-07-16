@@ -73,10 +73,12 @@
                 <div class="mb-3">
                     <label>课程封面地址</label>
                     <input type="text" class="form-control" id="cover" placeholder="http 或者 /image/xxx.jpg">
+                    <input type="file" class="form-control mt-1" id="coverUpload" accept="image/*">
                 </div>
                 <div class="mb-3">
                     <label>课程视频地址</label>
                     <input type="text" class="form-control" id="videoUrl" placeholder="http 或者 /video/xxx.mp4">
+                    <input type="file" class="form-control mt-1" id="videoUpload" accept="video/mp4,video/mov">
                 </div>
                 <!-- ===== V2新增价格输入框 ===== -->
                 <div class="mb-3">
@@ -238,6 +240,46 @@
             }
         });
     });
+
+    // 封面图片上传
+    $("#coverUpload").on("change", function () {
+        let formData = new FormData();
+        formData.append("file", this.files[0]);
+        $.ajax({
+            url: "/api/file/upload/image",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.code === 200) {
+                    $("#cover").val(res.data);
+                } else {
+                    alert(res.msg);
+                }
+            }
+        })
+    })
+
+    // 视频上传
+    $("#videoUpload").on("change", function () {
+        let formData = new FormData();
+        formData.append("file", this.files[0]);
+        $.ajax({
+            url: "/api/file/upload/video",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.code === 200) {
+                    $("#videoUrl").val(res.data);
+                } else {
+                    alert(res.msg);
+                }
+            }
+        })
+    })
 
     // 删除课程
     function deleteCourse(id) {
