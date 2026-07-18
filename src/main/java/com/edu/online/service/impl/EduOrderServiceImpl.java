@@ -7,6 +7,6 @@ import com.edu.online.service.EduOrderService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EduOrderCourseServiceImpl extends ServiceImpl<EduOrderMapper, EduOrder> implements EduOrderService {
+public class EduOrderServiceImpl extends ServiceImpl<EduOrderMapper, EduOrder> implements EduOrderService {
 
 }
