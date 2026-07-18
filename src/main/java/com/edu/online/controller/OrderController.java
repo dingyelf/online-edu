@@ -16,6 +16,7 @@ import com.edu.online.util.OrderUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -77,7 +78,7 @@ public class OrderController {
         wrapper.orderByDesc(EduOrder::getCreateTime);
 
         IPage<EduOrder> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(current, size);
-        page = orderService.page(page);
+        page = orderService.page(page, wrapper);
 
         return Result.success(PageResult.build(page));
     }
@@ -121,6 +122,7 @@ public class OrderController {
 
     @Operation(summary = "模拟支付 (⚠️ 测试接口)", description = "模拟支付成功，修改订单状态为已支付并创建购买记录。仅用于测试，正式环境请删除")
     @PostMapping("/mockPay")
+    @Transactional(rollbackFor = {Exception.class})
     public Result<String> mockPay(@RequestParam("orderId") Long orderId, HttpSession session) {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
         EduOrder order = orderService.getById(orderId);
