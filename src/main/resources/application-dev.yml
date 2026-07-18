@@ -1,3 +1,14 @@
 file:
   upload-path: /Users/liaofang/online-edu-files
   access-prefix: /files
+
+#springdoc:
+#  api-docs:
+#    enabled: true
+#  swagger-ui:
+#    enabled: true
+#knife4j:
+#  enable: true
+#  production: false
+#  basic:
+#    enable: false

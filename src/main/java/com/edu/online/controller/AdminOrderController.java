@@ -7,6 +7,8 @@ import com.edu.online.common.PageResult;
 import com.edu.online.common.Result;
 import com.edu.online.entity.EduOrder;
 import com.edu.online.service.EduOrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "订单管理（管理员）", description = "管理员查看全部订单，需要管理员权限")
 @RestController
 @RequestMapping("/api/admin/order")
 public class AdminOrderController {
@@ -24,9 +27,7 @@ public class AdminOrderController {
         this.orderService = orderService;
     }
 
-    /**
-     * 管理员查询全部订单
-     */
+    @Operation(summary = "全部订单列表", description = "管理员分页查看所有用户的订单（按创建时间倒序）")
     @GetMapping("/list")
     public Result<PageResult<EduOrder>>  orderPage(
             @RequestParam(name = "current", defaultValue = "1") Long current,

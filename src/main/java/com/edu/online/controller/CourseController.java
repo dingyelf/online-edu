@@ -7,6 +7,8 @@ import com.edu.online.entity.SysUser;
 import com.edu.online.exception.BusinessException;
 import com.edu.online.service.EduCourseService;
 import com.edu.online.service.EduUserCourseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Tag(name = "课程模块（公开）", description = "课程列表浏览与详情查看")
 @RestController
 @RequestMapping("/api/course")
 public class CourseController {
@@ -29,7 +32,7 @@ public class CourseController {
     }
 
 
-    // 公开课程列表
+    @Operation(summary = "课程列表", description = "公开接口，从Redis缓存获取课程列表，分页返回")
     @GetMapping("/list")
     public Result<PageResult<EduCourse>> getCourseList(
             @RequestParam(value = "current", defaultValue = "1") Long current,
@@ -39,7 +42,7 @@ public class CourseController {
         return Result.success(pageResult);
     }
 
-    // 公开课程详情
+    @Operation(summary = "课程详情", description = "公开接口，免费课程返回完整信息，付费课程未购买/未登录则隐藏视频地址")
     @GetMapping("/detail")
     public Result<EduCourse> getCourseDetail(@RequestParam("id") Long id, HttpSession session) {
         // 使用带缓存方法获取原始课程

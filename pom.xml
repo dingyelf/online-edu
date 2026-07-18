@@ -75,6 +75,13 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
 
+        <!-- Knife4j API文档（基于Springdoc OpenAPI 3，Jakarta EE） -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

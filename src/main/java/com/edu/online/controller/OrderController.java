@@ -13,13 +13,15 @@ import com.edu.online.service.EduCourseService;
 import com.edu.online.service.EduOrderService;
 import com.edu.online.service.EduUserCourseService;
 import com.edu.online.util.OrderUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Tag(name = "订单模块（用户）", description = "用户订单的创建、支付、取消、查询")
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
@@ -36,13 +38,7 @@ public class OrderController {
         this.userCourseService = userCourseService;
     }
 
-    /**
-     * 创建订单
-     *
-     * @param courseId
-     * @param session
-     * @return
-     */
+    @Operation(summary = "创建订单", description = "为指定课程创建待支付订单，雪花算法生成订单号")
     @RequestMapping("/create")
     public Result<EduOrder> createOrder(@RequestParam("courseId") Long courseId, HttpSession session) {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
@@ -68,9 +64,7 @@ public class OrderController {
         return Result.success(order);
     }
 
-    /**
-     * 获取我的订单列表
-     */
+    @Operation(summary = "我的订单列表", description = "分页查询当前登录用户的订单，按创建时间倒序")
     @GetMapping("/myList")
     public Result<PageResult<EduOrder>> myOrderList(
             @RequestParam(name = "current", defaultValue = "1") Long current,
@@ -88,9 +82,7 @@ public class OrderController {
         return Result.success(PageResult.build(page));
     }
 
-    /**
-     * 订单详情
-     */
+    @Operation(summary = "订单详情", description = "根据ID查询单个订单，只能查看自己的订单")
     @GetMapping("/getById")
     public Result<EduOrder> getOrderInfo(@RequestParam("id") Long orderId,
                                          HttpSession session) {
@@ -106,9 +98,7 @@ public class OrderController {
         return Result.success(order);
     }
 
-    /**
-     * 取消未支付订单
-     */
+    @Operation(summary = "取消订单", description = "取消待支付状态的订单，状态改为已取消")
     @PostMapping("/cancel")
     public Result<String> cancelOrder(@RequestParam("id") Long orderId,
                                       HttpSession session) {
@@ -129,9 +119,7 @@ public class OrderController {
         return Result.success("取消成功");
     }
 
-    /**
-     * 模拟支付成功（测试使用！正式环境删除）
-     */
+    @Operation(summary = "模拟支付 (⚠️ 测试接口)", description = "模拟支付成功，修改订单状态为已支付并创建购买记录。仅用于测试，正式环境请删除")
     @PostMapping("/mockPay")
     public Result<String> mockPay(@RequestParam("orderId") Long orderId, HttpSession session) {
         SysUser loginUser = (SysUser) session.getAttribute("loginUser");
