@@ -5,15 +5,23 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PageResult <T> {
+public class PageResult<T> {
 
-    /** 当前页数据 */
+    /**
+     * 当前页数据
+     */
     private List<T> records;
-    /** 总条数 */
+    /**
+     * 总条数
+     */
     private Long total;
-    /** 当前页码 */
+    /**
+     * 当前页码
+     */
     private Long current;
-    /** 每页条数 */
+    /**
+     * 每页条数
+     */
     private Long size;
 
     public static <T> PageResult<T> build(com.baomidou.mybatisplus.core.metadata.IPage<T> page) {

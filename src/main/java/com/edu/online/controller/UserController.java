@@ -6,7 +6,6 @@ import com.edu.online.entity.SysUser;
 import com.edu.online.exception.BusinessException;
 import com.edu.online.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

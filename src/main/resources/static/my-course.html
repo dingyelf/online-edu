@@ -39,6 +39,7 @@
 <script>
     let current = 1;
     const pageSize = 8;
+
     function loadMyCourse() {
         // 思路：先查全部订单（已支付）→拿到courseId，再查询课程信息
         ajaxRequest(`/api/order/myList?current=${current}&size=${pageSize}`, 'GET').done(res => {

@@ -36,6 +36,7 @@ public class LocalFileService {
 
     /**
      * 根据数据库url删除本地磁盘文件
+     *
      * @param fileUrl
      */
     public void deleteFile(String fileUrl) {

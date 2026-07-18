@@ -61,25 +61,29 @@
     let orderCurrent = 1;
     const pageSize = 10;
 
-    function getStatusText(status){
-        switch(status){
-            case 0:return '<span class="text-warning">待支付</span>';
-            case 1:return '<span class="text-success">已支付</span>';
-            case 2:return '<span class="text-secondary">已取消</span>';
-            default:return "未知";
+    function getStatusText(status) {
+        switch (status) {
+            case 0:
+                return '<span class="text-warning">待支付</span>';
+            case 1:
+                return '<span class="text-success">已支付</span>';
+            case 2:
+                return '<span class="text-secondary">已取消</span>';
+            default:
+                return "未知";
         }
     }
 
-    function loadOrderList(){
-        ajaxRequest(`/api/admin/order/list?current=${orderCurrent}&size=${pageSize}`,"GET").done(res=>{
-            if(res.code!==200) return;
+    function loadOrderList() {
+        ajaxRequest(`/api/admin/order/list?current=${orderCurrent}&size=${pageSize}`, "GET").done(res => {
+            if (res.code !== 200) return;
             const page = res.data;
             const list = page.records;
             let html = "";
-            if(list.length===0){
+            if (list.length === 0) {
                 html = "<tr><td colspan='6' class='text-center'>暂无订单数据</td></tr>";
-            }else{
-                list.forEach(item=>{
+            } else {
+                list.forEach(item => {
                     html += `
                     <tr>
                         <td>${item.orderNo}</td>
@@ -101,28 +105,29 @@
         let total = page.total;
         let current = page.current;
         let size = page.size;
-        let totalPage = Math.ceil(total/size);
+        let totalPage = Math.ceil(total / size);
         let pageHtml = `<ul class="pagination">`;
-        if(current>1){
-            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current-1})">上一页</a></li>`;
-        }else{
+        if (current > 1) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current - 1})">上一页</a></li>`;
+        } else {
             pageHtml += `<li class="page-item disabled"><span class="page-link">上一页</span></li>`;
         }
         pageHtml += `<li class="page-item disabled"><span class="page-link">第${current}页 / 共${totalPage}页</span></li>`;
-        if(current < totalPage){
-            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current+1})">下一页</a></li>`;
-        }else{
+        if (current < totalPage) {
+            pageHtml += `<li class="page-item"><a class="page-link" onclick="changeAdminOrderPage(${current + 1})">下一页</a></li>`;
+        } else {
             pageHtml += `<li class="page-item disabled"><span class="page-link">下一页</span></li>`;
         }
         pageHtml += `</ul>`;
         $("#pageBar").html(pageHtml);
     }
-    function changeAdminOrderPage(num){
+
+    function changeAdminOrderPage(num) {
         orderCurrent = num;
         loadOrderList();
     }
 
-    $(function(){
+    $(function () {
         loadOrderList();
     })
 </script>
