@@ -51,7 +51,7 @@
             }
             // 获取所有课程ID数组
             ajaxRequest('/api/course/list', 'GET').done(courseRes => {
-                const allCourse = courseRes.data;
+                const allCourse = courseRes.data.records;
                 let html = '';
                 allOrders.forEach(order => {
                     const course = allCourse.find(c => c.id === order.courseId);
